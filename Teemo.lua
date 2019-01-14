@@ -3,7 +3,7 @@ if myHero.charName ~= "Teemo" then return end
 -- [ update ]
 do
     
-    local Version = 1
+    local Version = 2
     
     local Files = {
         Lua = {
@@ -429,7 +429,7 @@ function GunbladeDMG()--3146
     return damage
 end
 
-local Version, Author, LVersion = "v1", "miragessee", "8.21"
+local Version, Author, LVersion = "v2", "miragessee", "9.1"
 
 function Teemo:LoadMenu()
     
@@ -441,10 +441,14 @@ function Teemo:LoadMenu()
     
     self.TeemoMenu = MenuElement({type = MENU, id = "Teemo", name = "Mirage's Teemo", leftIcon = HeroIcon})
     
+    self.TeemoMenu:MenuElement({type = MENU, id = "Teemo_3_Version", name = "Teemo_3_Version"})
+    self.TeemoMenu.Teemo_3_Version:MenuElement({id = "Version_1", name = "AP (Dark Harvest Rune) (Sorcery Shoes,Liandry,Nashor,Gunblade,Morello,Rabadon) AutoLevel_1 Q->E->W H/C Use Q true"})
+    self.TeemoMenu.Teemo_3_Version:MenuElement({id = "Version_2", name = "AD (Lethal Tempo Rune) (Berserker's Greaves,Nashor,Gunblade,Guinso,Runa,Rabadon AutoLevel_2 H/C Use Q false"})
+    self.TeemoMenu.Teemo_3_Version:MenuElement({id = "Version_3", name = "AD (Glacial Augment Rune) (Boots of Swiftness,Frozen Mallet,Trinity Force,Gunblade,Guinso,Rabadon) AutoLevel_3 W->E->Q H/C Use Q true"})
+    
     self.TeemoMenu:MenuElement({type = MENU, id = "Extra", name = "Extra"})
     self.TeemoMenu.Extra:MenuElement({id = "UseQBA", name = "Use Q if enemy basic attack", value = true, leftIcon = QIcon})
     --self.TeemoMenu.Extra:MenuElement({id = "UseEM", name = "Use E killable minion", value = true, leftIcon = EIcon})
-
     self.TeemoMenu:MenuElement({type = MENU, id = "Harass", name = "Harass"})
     self.TeemoMenu.Harass:MenuElement({id = "UseQ", name = "Use Q", value = false, leftIcon = QIcon})
     self.TeemoMenu.Harass:MenuElement({id = "UseBC", name = "Use Bilgewater Cutlass", value = true, leftIcon = BCIcon})
@@ -465,7 +469,9 @@ function Teemo:LoadMenu()
     self.TeemoMenu.KillSteal:MenuElement({id = "UseHG", name = "Use Hextech Gunblade", value = true, leftIcon = HGIcon})
     
     self.TeemoMenu:MenuElement({id = "AutoLevel", name = "AutoLevel", type = MENU})
-    self.TeemoMenu.AutoLevel:MenuElement({id = "AutoLevel", name = "First Q->E->W then E->Q->W", value = true})
+    self.TeemoMenu.AutoLevel:MenuElement({id = "AutoLevel_1", name = "Q->E->W", value = false})
+    self.TeemoMenu.AutoLevel:MenuElement({id = "AutoLevel_2", name = "First Q->E->W then E->Q->W", value = false})
+    self.TeemoMenu.AutoLevel:MenuElement({id = "AutoLevel_3", name = "W->E->Q", value = false})
     
     self.TeemoMenu:MenuElement({id = "Clear", name = "Clear", type = MENU})
     self.TeemoMenu.Clear:MenuElement({id = "UseQ", name = "Use Q", value = false, leftIcon = QIcon})
@@ -532,8 +538,8 @@ function Teemo:Tick()
     Item_HK[ITEM_7] = HK_ITEM_7
     
     self:Action()
-    
-    if self.TeemoMenu.AutoLevel.AutoLevel:Value() then
+
+    if self.TeemoMenu.AutoLevel.AutoLevel_1:Value() then
         local mylevel = myHero.levelData.lvl
         local mylevelpts = myHero.levelData.lvlPts
         
@@ -543,12 +549,41 @@ function Teemo:Tick()
                 LocalControlKeyDown(HK_R)
                 LocalControlKeyUp(HK_R)
                 LocalControlKeyUp(HK_LUS)
-            elseif mylevel == 1 or mylevel == 8 or mylevel == 10 or mylevel == 12 or mylevel == 13 then
+            elseif mylevel == 2 or mylevel == 8 or mylevel == 10 or mylevel == 12 or mylevel == 13 then
+                LocalControlKeyDown(HK_LUS)
+                LocalControlKeyDown(HK_E)
+                LocalControlKeyUp(HK_E)
+                LocalControlKeyUp(HK_LUS)
+            elseif mylevel == 1 or mylevel == 4 or mylevel == 5 or mylevel == 7 or mylevel == 9 then
                 LocalControlKeyDown(HK_LUS)
                 LocalControlKeyDown(HK_Q)
                 LocalControlKeyUp(HK_Q)
                 LocalControlKeyUp(HK_LUS)
-            elseif mylevel == 2 or mylevel == 4 or mylevel == 5 or mylevel == 7 or mylevel == 9 then
+            elseif mylevel == 3 or mylevel == 14 or mylevel == 15 or mylevel == 17 or mylevel == 18 then
+                LocalControlKeyDown(HK_LUS)
+                LocalControlKeyDown(HK_W)
+                LocalControlKeyUp(HK_W)
+                LocalControlKeyUp(HK_LUS)
+            end
+        end
+    end
+    
+    if self.TeemoMenu.AutoLevel.AutoLevel_2:Value() then
+        local mylevel = myHero.levelData.lvl
+        local mylevelpts = myHero.levelData.lvlPts
+        
+        if mylevelpts > 0 then
+            if mylevel == 6 or mylevel == 11 or mylevel == 16 then
+                LocalControlKeyDown(HK_LUS)
+                LocalControlKeyDown(HK_R)
+                LocalControlKeyUp(HK_R)
+                LocalControlKeyUp(HK_LUS)
+            elseif mylevel == 2 or mylevel == 8 or mylevel == 10 or mylevel == 12 or mylevel == 13 then
+                LocalControlKeyDown(HK_LUS)
+                LocalControlKeyDown(HK_Q)
+                LocalControlKeyUp(HK_Q)
+                LocalControlKeyUp(HK_LUS)
+            elseif mylevel == 1 or mylevel == 4 or mylevel == 5 or mylevel == 7 or mylevel == 9 then
                 LocalControlKeyDown(HK_LUS)
                 LocalControlKeyDown(HK_E)
                 LocalControlKeyUp(HK_E)
@@ -557,6 +592,35 @@ function Teemo:Tick()
                 LocalControlKeyDown(HK_LUS)
                 LocalControlKeyDown(HK_W)
                 LocalControlKeyUp(HK_W)
+                LocalControlKeyUp(HK_LUS)
+            end
+        end
+    end
+
+    if self.TeemoMenu.AutoLevel.AutoLevel_3:Value() then
+        local mylevel = myHero.levelData.lvl
+        local mylevelpts = myHero.levelData.lvlPts
+        
+        if mylevelpts > 0 then
+            if mylevel == 6 or mylevel == 11 or mylevel == 16 then
+                LocalControlKeyDown(HK_LUS)
+                LocalControlKeyDown(HK_R)
+                LocalControlKeyUp(HK_R)
+                LocalControlKeyUp(HK_LUS)
+            elseif mylevel == 2 or mylevel == 8 or mylevel == 10 or mylevel == 12 or mylevel == 13 then
+                LocalControlKeyDown(HK_LUS)
+                LocalControlKeyDown(HK_E)
+                LocalControlKeyUp(HK_E)
+                LocalControlKeyUp(HK_LUS)
+            elseif mylevel == 1 or mylevel == 4 or mylevel == 5 or mylevel == 7 or mylevel == 9 then
+                LocalControlKeyDown(HK_LUS)
+                LocalControlKeyDown(HK_W)
+                LocalControlKeyUp(HK_W)
+                LocalControlKeyUp(HK_LUS)
+            elseif mylevel == 3 or mylevel == 14 or mylevel == 15 or mylevel == 17 or mylevel == 18 then
+                LocalControlKeyDown(HK_LUS)
+                LocalControlKeyDown(HK_Q)
+                LocalControlKeyUp(HK_Q)
                 LocalControlKeyUp(HK_LUS)
             end
         end
@@ -745,7 +809,7 @@ function Teemo:KillSteal()
     for i, enemy in pairs(GetEnemyHeroes()) do
         if self.TeemoMenu.KillSteal.UseIgnite:Value() then
             local IgniteDmg = (55 + 25 * myHero.levelData.lvl)
-            if ValidTarget(enemy, 600) and enemy.health + enemy.shieldAD < IgniteDmg then
+            if ValidTarget(enemy, 600) and enemy.health + enemy.hpRegen < IgniteDmg then
                 if not IsImmune(enemy) then
                     if myHero:GetSpellData(SUMMONER_1).name == "SummonerDot" and IsReady(SUMMONER_1) then
                         Control.CastSpell(HK_SUMMONER_1, enemy)
@@ -811,9 +875,8 @@ function TestBuff(unit)
 end
 
 function Teemo:Harass()
-
-    --print(myHero:GetSpellData(_R).range)
     
+    --print(myHero:GetSpellData(_R).range)
     --print(self.Collision)
     --GetGameObjects()
     local targetBC = GOS:GetTarget(550, "AP")
@@ -837,9 +900,8 @@ function Teemo:Harass()
     end
     
     local targetQ = GOS:GetTarget(TeemoQ.range, "AP")
-
-    --print(TestBuff(targetQ))
     
+    --print(TestBuff(targetQ))
     if targetQ then
         if not IsImmune(targetQ) then
             if self.TeemoMenu.Harass.UseQ:Value() then
@@ -878,7 +940,7 @@ function Teemo:Combo()
             end
         end
     end
-
+    
     local targetSmite = GOS:GetTarget(500, "AP")
     
     if self.TeemoMenu.Combo.UseSmite:Value() then
@@ -930,9 +992,9 @@ function Teemo:Combo()
             end
         end
     end
-
+    
     local targetW = GOS:GetTarget(900, "AP")
-
+    
     if targetW then
         if IsReady(_W) then
             LocalControlCastSpell(HK_W)
